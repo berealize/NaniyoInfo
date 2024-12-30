@@ -19,6 +19,18 @@ namespace NaniyoInfo
         {
             InitializeComponent();
 
+            txtInfo.Text = "\r\n\r\n\r\n\r\n\r\n\r\nLoading System Information...";
+            txtInfo.TextAlign = HorizontalAlignment.Center;
+            txtInfo.Font = new Font(txtInfo.Font.Name, 20);
+            
+            txtInfo.SelectionStart = txtInfo.Text.Length;
+
+            System.Threading.Thread th = new System.Threading.Thread(GetSystemInfo);
+            th.Start();
+        }
+
+        public void GetSystemInfo()
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(GetComputerName());
             sb.AppendLine(GetOSName());
@@ -29,8 +41,25 @@ namespace NaniyoInfo
             sb.AppendLine(GetRAMInfo());
             sb.AppendLine(GetNetworkAdapter());
 
-            txtInfo.Text = sb.ToString();
-            txtInfo.SelectionStart = txtInfo.Text.Length;
+            if (txtInfo.InvokeRequired)
+            {
+                txtInfo.Invoke(new EventHandler(delegate
+                {
+                    txtInfo.Text = string.Empty;
+                    txtInfo.TextAlign = HorizontalAlignment.Left;
+                    txtInfo.Font = new Font(txtInfo.Font.Name, 11);
+                    txtInfo.Text = sb.ToString();
+                    txtInfo.SelectionStart = txtInfo.Text.Length;
+                }));
+            }
+            else
+            {
+                txtInfo.Text = string.Empty;
+                txtInfo.TextAlign = HorizontalAlignment.Left;
+                txtInfo.Font = new Font(txtInfo.Font.Name, 11);
+                txtInfo.Text = sb.ToString();
+                txtInfo.SelectionStart = txtInfo.Text.Length;
+            }
         }
 
         public string GetComputerName()
