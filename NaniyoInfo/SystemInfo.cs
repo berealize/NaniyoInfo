@@ -175,7 +175,7 @@ namespace NaniyoInfo
                 string ipAddress = ((string[])obj["IPAddress"])[0].ToString();
                 string desc = obj["Description"].ToString();
 
-                sb.AppendLine(string.Format("Ethernet ({0} enabled) IPv4 : {1}, MAC : {2} ({3})", i.ToString(), ipAddress, macAddress, desc));
+                sb.AppendLine(string.Format("Ethernet {0} IPv4 : {1}, MAC : {2} ({3})", i.ToString(), ipAddress, macAddress, desc));
                 i++;
             }
 
