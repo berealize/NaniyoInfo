@@ -136,9 +136,8 @@ namespace NaniyoInfo
 
             DriveInfo[] drives = DriveInfo.GetDrives();
 
-            sb.AppendLine(string.Format("Drive Information ( System Drive : {0} )", System.Environment.GetEnvironmentVariable("SystemDrive")));
+            sb.AppendLine(string.Format("Drive Information ( System Drive : {0} )", System.Environment.GetEnvironmentVariable("SystemDrive").Substring(0,1)));
 
-            int i = 0;
             foreach (DriveInfo drive in drives)
             {
                 string strTotalSize = Convert.ToInt32(drive.TotalSize / 1024 / 1024 / 1024).ToString();
@@ -148,16 +147,13 @@ namespace NaniyoInfo
                 string strFormat = drive.DriveFormat;
                 string strType = drive.DriveType.ToString();
 
-                string drvInfo = string.Format("Disk ({0})[ {1}:{2}({3}) ] Total : {4} GB, Usage : {5} GB, Free : {6} GB",
-                                    i.ToString(),
-                                    drive.Name,
+                string drvInfo = string.Format(" [{0}:{1}({2})] Total : {3} GB, Usage : {4} GB, Free : {5} GB",
+                                    drive.Name.Substring(0, 1),
                                     strFormat,
                                     strType,
                                     strTotalSize, 
                                     strUsage, 
                                     strFreeSize);
-
-                i++;
 
                 sb.AppendLine(drvInfo);
             }
