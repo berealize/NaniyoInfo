@@ -43,14 +43,7 @@ namespace NaniyoInfo
 
             if (txtInfo.InvokeRequired)
             {
-                txtInfo.Invoke(new EventHandler(delegate
-                {
-                    txtInfo.Text = string.Empty;
-                    txtInfo.TextAlign = HorizontalAlignment.Left;
-                    txtInfo.Font = new Font(txtInfo.Font.Name, 11);
-                    txtInfo.Text = sb.ToString();
-                    txtInfo.SelectionStart = txtInfo.Text.Length;
-                }));
+                txtInfo.Invoke(new MethodInvoker(GetSystemInfo));
             }
             else
             {
