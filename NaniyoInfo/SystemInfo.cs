@@ -11,6 +11,9 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
 namespace NaniyoInfo
 {
     public partial class SystemInfo : Form
@@ -32,14 +35,14 @@ namespace NaniyoInfo
         public void GetSystemInfo()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(GetComputerName());
-            sb.AppendLine(GetOSName());
-            sb.AppendLine(GetMotherBoardInfo());
-            sb.AppendLine(GetCPUInfo());
-            sb.AppendLine(GetGPUInfo());
-            sb.AppendLine(GetDiskInfo());
-            sb.AppendLine(GetRAMInfo());
-            sb.AppendLine(GetNetworkAdapter());
+            //sb.AppendLine(GetComputerName());
+            //sb.AppendLine(GetOSName());
+            //sb.AppendLine(GetMotherBoardInfo());
+            //sb.AppendLine(GetCPUInfo());
+            //sb.AppendLine(GetGPUInfo());
+            //sb.AppendLine(GetDiskInfo());
+            //sb.AppendLine(GetRAMInfo());
+            //sb.AppendLine(GetNetworkAdapter());
 
             if (txtInfo.InvokeRequired)
             {
@@ -203,5 +206,123 @@ namespace NaniyoInfo
 
             return sb.ToString();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //파일오픈창 생성 및 설정
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "인증서 선택";
+
+            //AppData_NPKI();
+            //Path_NPKI();
+            //Path_x86_NPKI();
+
+            DialogResult dr = ofd.ShowDialog();
+
+            if (dr == DialogResult.OK)
+            {
+                string szSignCertFile = ofd.FileName;  // "SignCert.der경로"
+                string szSingPriFile = "SignPri.key경로";
+            
+
+                X509Certificate2 cert = new X509Certificate2(szSignCertFile);
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(string.Format("[1.인증서명: {0} ]", cert.GetNameInfo(X509NameType.DnsName, false).ToString()));       // CertName 
+                sb.AppendLine(string.Format("[2.인증기관: {0} ]", cert.GetNameInfo(X509NameType.DnsName, true).ToString()));        // RegOrganization
+                sb.AppendLine(string.Format("[3.등록날짜: {0} ] 인증서 등록(시작)일", cert.NotBefore.ToString("yyyyMMdd")));        // RegDate 
+                sb.AppendLine(string.Format("[4.만료날짜: {0} ] 인증서 만료일", cert.NotAfter.ToString("yyyyMMdd")));               // ExpDate
+                sb.AppendLine(string.Format("[5.일련번호: {0} ] 16진수 문자열을 숫자로 변경 - 앞에 '0' 을 제외", cert.SerialNumber.TrimStart('0').ToString())); // SerialNo 
+
+                sb.AppendLine(string.Format("[6.알고리즘: {0}({1}) ] ", cert.SignatureAlgorithm.FriendlyName, cert.SignatureAlgorithm.Value.ToString())); // SerialNo 
+                
+                sb.AppendLine(cert.ToString(true));
+
+                txtInfo.AppendText(sb.ToString());
+            }
+        }
+
+        //인증서 목록 불러오기 - AppData_NPKI
+        private void AppData_NPKI()
+        {
+            string path = string.Empty;
+            string strsub = string.Empty;
+
+            DataTable dt = null;
+            DataRow dr = null;
+
+            dt_create01(ref dt);
+
+            // C:\\Users\\사용자명\\AppData\\
+            path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile).ToString();
+            path += "\\AppData\\LocalLow\\NPKI\\yessign\\USER\\";
+
+            System.IO.DirectoryInfo dirinfo = new System.IO.DirectoryInfo(path);
+            foreach (var item in dirinfo.GetDirectories())
+            {
+                dr = dt.Rows.Add();
+                dr["NPKI"] = item.Name.ToString();
+            }
+
+            if (dt.Rows.Count > 0)
+            {
+                // 폴더 열기
+                System.Diagnostics.Process.Start(path);
+
+                /*
+                foreach (DataRow item in dt.Rows)
+                {
+                    MessageBox.Show(item["NPKI"].ToString());
+                }
+                */
+            }
+        }
+
+        private void dt_create01(ref DataTable dt)
+        {
+            try
+            {
+                dt = new DataTable();
+
+                dt.Columns.Add("NPKI");
+            }
+            catch (Exception ex)
+            {
+                // MessageBox.Show(ex.Message.ToString());
+            }
+        }
+
+        private void Path_x86_NPKI()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86).ToString() + "\\NPKI\\yessign\\USER\\";
+
+            DirectoryInfo di = new DirectoryInfo(path);
+            if (di.Exists)
+            {
+                DirectoryInfo dirinfo = new DirectoryInfo(path);
+                if (dirinfo.GetDirectories().Count() > 0)
+                {
+                    // 폴더 열기
+                    System.Diagnostics.Process.Start(path);
+                }
+            }
+        }
+
+        private void Path_NPKI()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).ToString() + "\\NPKI\\yessign\\USER\\";
+
+            DirectoryInfo di = new DirectoryInfo(path);
+            if (di.Exists)
+            {
+                DirectoryInfo dirinfo = new DirectoryInfo(path);
+                if (dirinfo.GetDirectories().Count() > 0)
+                {
+                    // 폴더 열기
+                    System.Diagnostics.Process.Start(path);
+                }
+            }
+        }
+
     }
 }
