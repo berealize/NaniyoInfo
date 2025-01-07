@@ -233,10 +233,23 @@ namespace NaniyoInfo
                 sb.AppendLine(string.Format("[3.등록날짜: {0} ] 인증서 등록(시작)일", cert.NotBefore.ToString("yyyyMMdd")));        // RegDate 
                 sb.AppendLine(string.Format("[4.만료날짜: {0} ] 인증서 만료일", cert.NotAfter.ToString("yyyyMMdd")));               // ExpDate
                 sb.AppendLine(string.Format("[5.일련번호: {0} ] 16진수 문자열을 숫자로 변경 - 앞에 '0' 을 제외", cert.SerialNumber.TrimStart('0').ToString())); // SerialNo 
-
                 sb.AppendLine(string.Format("[6.알고리즘: {0}({1}) ] ", cert.SignatureAlgorithm.FriendlyName, cert.SignatureAlgorithm.Value.ToString())); // SerialNo 
-                
-                sb.AppendLine(cert.ToString(true));
+                sb.AppendLine(cert.ToString());
+
+                //Print to console information contained in the certificate.
+                Console.WriteLine("{0}Subject: {1}{0}", Environment.NewLine, cert.Subject);
+                Console.WriteLine("{0}Issuer: {1}{0}", Environment.NewLine, cert.Issuer);
+                Console.WriteLine("{0}Version: {1}{0}", Environment.NewLine, cert.Version);
+                Console.WriteLine("{0}Valid Date: {1}{0}", Environment.NewLine, cert.NotBefore);
+                Console.WriteLine("{0}Expiry Date: {1}{0}", Environment.NewLine, cert.NotAfter);
+                Console.WriteLine("{0}Thumbprint: {1}{0}", Environment.NewLine, cert.Thumbprint);
+                Console.WriteLine("{0}Serial Number: {1}{0}", Environment.NewLine, cert.SerialNumber);
+                Console.WriteLine("{0}Friendly Name: {1}{0}", Environment.NewLine, cert.PublicKey.Oid.FriendlyName);
+                Console.WriteLine("{0}Public Key Format: {1}{0}", Environment.NewLine, cert.PublicKey.EncodedKeyValue.Format(true));
+                Console.WriteLine("{0}Raw Data Length: {1}{0}", Environment.NewLine, cert.RawData.Length);
+                Console.WriteLine("{0}Certificate to string: {1}{0}", Environment.NewLine, cert.ToString(true));
+                Console.WriteLine("{0}Certificate to XML String: {1}{0}", Environment.NewLine, cert.PublicKey.Key.ToXmlString(false));
+
 
                 txtInfo.AppendText(sb.ToString());
             }
