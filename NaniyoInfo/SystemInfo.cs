@@ -22,27 +22,28 @@ namespace NaniyoInfo
         {
             InitializeComponent();
 
-            txtInfo.Text = "\r\n\r\n\r\n\r\n\r\n\r\nLoading System Information...";
-            txtInfo.TextAlign = HorizontalAlignment.Center;
-            txtInfo.Font = new Font(txtInfo.Font.Name, 20);
-            
-            txtInfo.SelectionStart = txtInfo.Text.Length;
-
-            System.Threading.Thread th = new System.Threading.Thread(GetSystemInfo);
-            th.Start();
         }
 
         public void GetSystemInfo()
         {
+            txtInfo.Text = "\r\n\r\n\r\n\r\n\r\n\r\nLoading System Information...";
+            txtInfo.TextAlign = HorizontalAlignment.Center;
+            txtInfo.Font = new Font(txtInfo.Font.Name, 20);
+
+            txtInfo.SelectionStart = txtInfo.Text.Length;
+            Application.DoEvents();
+
             StringBuilder sb = new StringBuilder();
-            //sb.AppendLine(GetComputerName());
-            //sb.AppendLine(GetOSName());
-            //sb.AppendLine(GetMotherBoardInfo());
-            //sb.AppendLine(GetCPUInfo());
-            //sb.AppendLine(GetGPUInfo());
-            //sb.AppendLine(GetDiskInfo());
-            //sb.AppendLine(GetRAMInfo());
-            //sb.AppendLine(GetNetworkAdapter());
+
+            sb.AppendLine("\r\n\r\n\r\n");
+            sb.AppendLine(GetComputerName());
+            sb.AppendLine(GetOSName());
+            sb.AppendLine(GetMotherBoardInfo());
+            sb.AppendLine(GetCPUInfo());
+            sb.AppendLine(GetGPUInfo());
+            sb.AppendLine(GetDiskInfo());
+            sb.AppendLine(GetRAMInfo());
+            sb.AppendLine(GetNetworkAdapter());
 
             if (txtInfo.InvokeRequired)
             {
@@ -50,6 +51,7 @@ namespace NaniyoInfo
             }
             else
             {
+                txtInfo.SelectionStart = 0;
                 txtInfo.Text = string.Empty;
                 txtInfo.TextAlign = HorizontalAlignment.Left;
                 txtInfo.Font = new Font(txtInfo.Font.Name, 11);
@@ -227,31 +229,65 @@ namespace NaniyoInfo
 
                 X509Certificate2 cert = new X509Certificate2(szSignCertFile);
 
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(string.Format("[1.인증서명: {0} ]", cert.GetNameInfo(X509NameType.DnsName, false).ToString()));       // CertName 
-                sb.AppendLine(string.Format("[2.인증기관: {0} ]", cert.GetNameInfo(X509NameType.DnsName, true).ToString()));        // RegOrganization
-                sb.AppendLine(string.Format("[3.등록날짜: {0} ] 인증서 등록(시작)일", cert.NotBefore.ToString("yyyyMMdd")));        // RegDate 
-                sb.AppendLine(string.Format("[4.만료날짜: {0} ] 인증서 만료일", cert.NotAfter.ToString("yyyyMMdd")));               // ExpDate
-                sb.AppendLine(string.Format("[5.일련번호: {0} ] 16진수 문자열을 숫자로 변경 - 앞에 '0' 을 제외", cert.SerialNumber.TrimStart('0').ToString())); // SerialNo 
-                sb.AppendLine(string.Format("[6.알고리즘: {0}({1}) ] ", cert.SignatureAlgorithm.FriendlyName, cert.SignatureAlgorithm.Value.ToString())); // SerialNo 
-                sb.AppendLine(cert.ToString());
+                try
+                {
 
-                //Print to console information contained in the certificate.
-                Console.WriteLine("{0}Subject: {1}{0}", Environment.NewLine, cert.Subject);
-                Console.WriteLine("{0}Issuer: {1}{0}", Environment.NewLine, cert.Issuer);
-                Console.WriteLine("{0}Version: {1}{0}", Environment.NewLine, cert.Version);
-                Console.WriteLine("{0}Valid Date: {1}{0}", Environment.NewLine, cert.NotBefore);
-                Console.WriteLine("{0}Expiry Date: {1}{0}", Environment.NewLine, cert.NotAfter);
-                Console.WriteLine("{0}Thumbprint: {1}{0}", Environment.NewLine, cert.Thumbprint);
-                Console.WriteLine("{0}Serial Number: {1}{0}", Environment.NewLine, cert.SerialNumber);
-                Console.WriteLine("{0}Friendly Name: {1}{0}", Environment.NewLine, cert.PublicKey.Oid.FriendlyName);
-                Console.WriteLine("{0}Public Key Format: {1}{0}", Environment.NewLine, cert.PublicKey.EncodedKeyValue.Format(true));
-                Console.WriteLine("{0}Raw Data Length: {1}{0}", Environment.NewLine, cert.RawData.Length);
-                Console.WriteLine("{0}Certificate to string: {1}{0}", Environment.NewLine, cert.ToString(true));
-                Console.WriteLine("{0}Certificate to XML String: {1}{0}", Environment.NewLine, cert.PublicKey.Key.ToXmlString(false));
+                    StringBuilder sb = new StringBuilder();
+                    //sb.AppendLine(string.Format("[1.인증서명: {0} ]", cert.GetNameInfo(X509NameType.DnsName, false).ToString()));       // CertName 
+                    //sb.AppendLine(string.Format("[2.인증기관: {0} ]", cert.GetNameInfo(X509NameType.DnsName, true).ToString()));        // RegOrganization
+                    //sb.AppendLine(string.Format("[3.등록날짜: {0} ] 인증서 등록(시작)일", cert.NotBefore.ToString("yyyyMMdd")));        // RegDate 
+                    //sb.AppendLine(string.Format("[4.만료날짜: {0} ] 인증서 만료일", cert.NotAfter.ToString("yyyyMMdd")));               // ExpDate
+                    //sb.AppendLine(string.Format("[5.일련번호: {0} ] 16진수 문자열을 숫자로 변경 - 앞에 '0' 을 제외", cert.SerialNumber.TrimStart('0').ToString())); // SerialNo 
+                    //sb.AppendLine(string.Format("[6.알고리즘: {0}({1}) ] ", cert.SignatureAlgorithm.FriendlyName, cert.SignatureAlgorithm.Value.ToString())); // SerialNo 
+                    //sb.AppendLine(cert.ToString());
 
+                    //Print to console information contained in the certificate.
 
-                txtInfo.AppendText(sb.ToString());
+                    sb.AppendLine("\r\n\r\n\r\n");
+
+                    sb.AppendLine(string.Format("\r\n[File Path]\r\n  {0}", szSignCertFile));
+
+                    sb.AppendLine(string.Format("\r\n[Verify]\r\n  {0}", cert.Verify()));
+                    sb.AppendLine(string.Format("\r\n[Format]\r\n  {0}", cert.GetFormat()));
+                    sb.AppendLine(string.Format("\r\n[Version]\r\n  V{0}", cert.Version));
+                    sb.AppendLine(string.Format("\r\n[Subject]\r\n  {0}\r\n  Simple Name: {1}\r\n  DNS Name: {2}",
+                                                cert.Subject,
+                                                cert.GetNameInfo(X509NameType.SimpleName, false).ToString(),
+                                                cert.GetNameInfo(X509NameType.DnsName, false).ToString()));
+                    sb.AppendLine(string.Format("\r\n[Issuer]\r\n  {0}\r\n  Simple Name: {1}\r\n  DNS Name: {2}",
+                                                cert.Issuer,
+                                                cert.GetNameInfo(X509NameType.SimpleName, true).ToString(),
+                                                cert.GetNameInfo(X509NameType.DnsName, true).ToString()));
+                    sb.AppendLine(string.Format("\r\n[Serial Number]\r\n  {0}", cert.SerialNumber));
+                    sb.AppendLine(string.Format("\r\n[Valid Date(Not Before)]\r\n  {0}", cert.NotBefore));
+                    sb.AppendLine(string.Format("\r\n[Expiry Date(Not After)\r\n  {0}", cert.NotAfter));
+                    sb.AppendLine(string.Format("\r\n[Thumbprint]\r\n  {0}", cert.Thumbprint));
+                    sb.AppendLine(string.Format("\r\n[Signature Algorim]\r\n  {0}({1})",
+                                                cert.SignatureAlgorithm.FriendlyName,
+                                                cert.SignatureAlgorithm.Value));
+                    sb.AppendLine(string.Format("\r\n[Public Key]\r\n  Algorithm: {0}\r\n  Length: {1}\r\n  Key Blob: {2}\r\n  Parameters: {3}",
+                                                cert.PublicKey.Oid.FriendlyName,
+                                                cert.PublicKey.Key.KeySize,
+                                                cert.PublicKey.EncodedKeyValue.Format(true),
+                                                cert.PublicKey.EncodedParameters.Format(true)));
+
+                    if (cert.Extensions.Count > 0)
+                        sb.AppendLine("\r\n[Extensions]");
+
+                    foreach (X509Extension xe in cert.Extensions)
+                        sb.AppendLine(string.Format(" * {0}({1}):\r\n   {2}", xe.Oid.FriendlyName, xe.Oid.Value, xe.Format(true).Replace(":\n", ":\r\n")));
+
+                    //sb.AppendLine(string.Format("\r\n[Certificate to string]\r\n {0}", cert.ToString(true)));
+                    //sb.AppendLine(string.Format("\r\n[Certificate to XML String]\r\n {0}", cert.PublicKey.Key.ToXmlString(false)));
+                    sb.AppendLine(string.Format("\r\n[Raw Data Length]\r\n  {0}", cert.RawData.Length));
+                    sb.AppendLine(string.Format("\r\n[Raw Data]\r\n{0}", cert.GetRawCertDataString()));
+
+                    txtInfo.Text = sb.ToString();
+                }
+                catch (Exception ex)
+                {
+                    txtInfo.Text = "인증서오류 : " + ex.ToString();
+                }
             }
         }
 
@@ -337,5 +373,9 @@ namespace NaniyoInfo
             }
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.GetSystemInfo();
+        }
     }
 }
