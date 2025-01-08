@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CertInfo.cs" />
     <Compile Include="CertMain.cs" />
     <Compile Include="SystemInfo.cs">
       <SubType>Form</SubType>
